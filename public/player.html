@@ -1,23 +1,79 @@
 <!doctype html>
 <html>
+<style>
+    table {
+        text-align: left;
+        /*        width:100%;*/
+    }
+    
+    table tr {
+        vertical-align: top;
+    }
+    
+    video {
+        width: 100%;
+    }
+    /*
+    table textarea {
+        width: 100%;
+    }
+*/
+    
+    [ng\:cloak],
+    [ng-cloak],
+    [data-ng-cloak],
+    [x-ng-cloak],
+    .ng-cloak,
+    .x-ng-cloak {
+        display: none !important;
+    }
+</style>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <head>
     <meta charset="UTF-8">
     <title>html 5 player</title>
 </head>
 
-<body>
-    <table>
-        <th>
-            <td>Video</td>
-            <td>Subtitle</td>
-        </th>
-        <tr>
-            <video width="50%" controls src="videos/Google%20Ideas-%20Project%20Shield.mp4">
-                <track src="tracks/track.vtt" kind="subtitles" srclang="en" label="English" default>
-            </video>
-        </tr>
-    </table>
+<body ng-app="player_app" ng-controller="playerCtrl as player" ng-cloak ng-strict-di>
+    <md-content class='layout-padding'>
+        <main>
+            <div layout="row" layout-align='space-between stretch'>
+                <div flex='70'>
+                    <video controls src="videos/Google%20Ideas-%20Project%20Shield.mp4">
+                        <track src="tracks/track.vtt" kind="subtitles" srclang="en" label="English" default>
+                    </video>
+                </div>
+
+                <textarea ng-model="player.vtt" flex='auto'></textarea>
+
+
+            </div>
+            <div layout="row" layout-align='end stretch'>
+                <md-button class="md-raised">Edit
+                <md-icon>mode_edit</md-icon>
+            </md-button>
+            <md-button class="md-raised md-primary">Save
+                <md-icon>save</md-icon>
+            </md-button>
+            </div>
+            
+            
+            
+
+
+        </main>
+    </md-content>
 </body>
+<script src="//code.angularjs.org/snapshot/angular.min.js"></script>
+<script src="//code.angularjs.org/snapshot/angular-route.min.js"></script>
+<script src="//code.angularjs.org/snapshot/angular-animate.min.js"></script>
+<script src="//code.angularjs.org/snapshot/angular-aria.min.js"></script>
+<script src="//code.angularjs.org/snapshot/angular-touch.min.js"></script>
+<script src="//code.angularjs.org/snapshot/angular-cookies.min.js"></script>
+<script src="//code.angularjs.org/snapshot/angular-sanitize.min.js"></script>
+<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+<script type="application/javascript" src="/js/player.js"></script>
 
 </html>
