@@ -1,24 +1,6 @@
 <!doctype html>
 <html>
 <style>
-    table {
-        text-align: left;
-        /*        width:100%;*/
-    }
-    
-    table tr {
-        vertical-align: top;
-    }
-    
-    video {
-        width: 100%;
-    }
-    /*
-    table textarea {
-        width: 100%;
-    }
-*/
-    
     [ng\:cloak],
     [ng-cloak],
     [data-ng-cloak],
@@ -26,6 +8,29 @@
     .ng-cloak,
     .x-ng-cloak {
         display: none !important;
+    }
+    
+    table {
+        text-align: left;
+    }
+    
+    table tr {
+        vertical-align: top;
+    }
+    
+    video {
+        height: 480px;
+        width: 800px;
+    }
+    
+    textarea {
+        height: 480px;
+        width: 320px;
+    }
+    
+    .cue {
+        height: 480px;
+        width: 320px;
     }
 </style>
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
@@ -37,31 +42,57 @@
 </head>
 
 <body ng-app="player_app" ng-controller="playerCtrl as player" ng-cloak ng-strict-di>
-    <md-content class='layout-padding'>
+    <md-content>
         <main>
-            <div layout="row" layout-align='space-between stretch'>
-                <div flex='70'>
-                    <video controls src="videos/Google%20Ideas-%20Project%20Shield.mp4">
-                        <track src="tracks/track.vtt" kind="subtitles" srclang="en" label="English" default>
-                    </video>
-                </div>
-
-                <textarea ng-model="player.vtt" flex='auto'></textarea>
-
-
-            </div>
-            <div layout="row" layout-align='end stretch'>
-                <md-button class="md-raised">Edit
-                <md-icon>mode_edit</md-icon>
-            </md-button>
-            <md-button class="md-raised md-primary">Save
-                <md-icon>save</md-icon>
-            </md-button>
-            </div>
-            
-            
-            
-
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <video controls src="videos/Google%20Ideas-%20Project%20Shield.mp4">
+                                <track onload='angular.element(this).controller().setTrack(this);' ng-src="{{player.track_url}}" kind="subtitles" srclang="en" label="English" default>
+                            </video>
+                        </td>
+                        <td>
+                            <textarea ng-model="player.vtt" ng-show="player.isEdit"></textarea>
+                            <md-content class="cue" ng-hide="player.isEdit">
+                                <section>
+                                    <md-subheader class="md-primary">Track</md-subheader>
+                                    <md-list layout="column" layout-padding>
+                                        <md-list-item class="md-3-line" ng-repeat="cue in player.cues" ng-click='player.setCurrentTime(cue)'>
+                                            <div class="md-list-item-text" layout="column">
+                                                <p>
+                                                    {{$index+1}}.
+                                                </p>
+                                                <h4>
+                                                    {{cue.text}}
+                                                </h4>
+                                                <p>
+                                                    <md-button class="md-icon-button" aria-label="reply" ng-click="player.setReply($event)">
+                                                        <md-icon>reply</md-icon>
+                                                    </md-button>
+                                                </p>
+                                        </md-list-item>
+                                    </md-list>
+                                </section>
+                            </md-content>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td layout='row' layout-align="end center">
+                            <md-button class="md-raised" ng-click="player.setEdit()">
+                                Edit
+                                <md-icon>mode_edit</md-icon>
+                            </md-button>
+                            <md-button class="md-raised md-primary">Save
+                                <md-icon>save</md-icon>
+                            </md-button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
 
         </main>
     </md-content>
@@ -74,6 +105,6 @@
 <script src="//code.angularjs.org/snapshot/angular-cookies.min.js"></script>
 <script src="//code.angularjs.org/snapshot/angular-sanitize.min.js"></script>
 <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
-<script type="application/javascript" src="/js/player.js"></script>
+<script type="application/javascript" src="js/player.js"></script>
 
 </html>
