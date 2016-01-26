@@ -30,11 +30,12 @@
     
     .cue {
         height: 480px;
-        width: 320px;
+        width: 480px;
     }
 </style>
+<!-- Angular Material CSS using GitCDN to load directly from `bower-material/master` -->
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <head>
     <meta charset="UTF-8">
@@ -58,19 +59,15 @@
                                 <section>
                                     <md-subheader class="md-primary">Track</md-subheader>
                                     <md-list layout="column" layout-padding>
-                                        <md-list-item class="md-3-line" ng-repeat="cue in player.cues" ng-click='player.setCurrentTime(cue)'>
-                                            <div class="md-list-item-text" layout="column">
+                                        <md-list-item class="secondary-button-padding" ng-repeat="cue in player.cues" ng-click='player.setCurrentTime(cue)'>
+                                            <p>
+                                                <var>{{$index+1}}.</var>
+                                                <samp>{{cue.startTime}}</samp>&rArr;<samp>{{cue.endTime}}</samp>
+                                                <br/> {{cue.text}}
                                                 <p>
-                                                    {{$index+1}}.
-                                                </p>
-                                                <h4>
-                                                    {{cue.text}}
-                                                </h4>
-                                                <p>
-                                                    <md-button class="md-icon-button" aria-label="reply" ng-click="player.setReply($event)">
+                                                    <md-button class="md-secondary" aria-label="reply" ng-click="player.setReply(cue)">
                                                         <md-icon>reply</md-icon>
                                                     </md-button>
-                                                </p>
                                         </md-list-item>
                                     </md-list>
                                 </section>
@@ -93,17 +90,47 @@
                     </tr>
                 </tfoot>
             </table>
-
         </main>
     </md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="comments_view">
+        <md-toolbar class="md-theme-light">
+            <div class="md-toolbar-tools">
+                <h1 class="md-toolbar-tools">Comments</h1>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="player.close()">
+                    <md-icon>
+                        close
+                    </md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-content layout-padding>
+            <md-list>
+                <md-list-item class="md-3-line md-long-text" ng-repeat="comment in player.comments">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>{{ comment }}</h3>
+                        <h4>{{ comment }}</h4>
+                        <p>{{ comment }}</p>
+                    </div>
+                </md-list-item>
+            </md-list>
+            <form>
+                <div layout='row'>
+                    <md-input-container md-no-float class='md-block' flex='100'>
+                        <input type="text" id="testInput" ng-model="player.tmp_comment" placeholder="Enter comment..." />
+                    </md-input-container>
+                </div>
+            </form>
+        </md-content>
+    </md-sidenav>
 </body>
-<script src="//code.angularjs.org/snapshot/angular.min.js"></script>
-<script src="//code.angularjs.org/snapshot/angular-route.min.js"></script>
-<script src="//code.angularjs.org/snapshot/angular-animate.min.js"></script>
-<script src="//code.angularjs.org/snapshot/angular-aria.min.js"></script>
-<script src="//code.angularjs.org/snapshot/angular-touch.min.js"></script>
-<script src="//code.angularjs.org/snapshot/angular-cookies.min.js"></script>
-<script src="//code.angularjs.org/snapshot/angular-sanitize.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular-route.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular-animate.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular-aria.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular-touch.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular-cookies.min.js"></script>
+<script type="application/javascript" src="//code.angularjs.org/snapshot/angular-sanitize.min.js"></script>
 <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
 <script type="application/javascript" src="js/player.js"></script>
 

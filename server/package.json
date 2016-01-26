@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "jsonfile": "^2.2.3",
+    "mongoose": "^4.3.7",
     "multer": "^1.1.0",
     "nodemon": "^1.8.1",
     "objectid": "^3.2.1"

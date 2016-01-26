@@ -1,11 +1,11 @@
 var player_app = angular.module('player_app', ['ngMaterial']);
-player_app.controller('playerCtrl', ['$scope', '$http', function ($scope, $http) {
+player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', function ($scope, $http, $mdSidenav) {
     //TODO:attributes;
     var self = this;
     self.track_url = 'tracks/track.vtt';
     self.vtt = "";
     self.cues = undefined;
-    self.isEdit=false;
+    self.isEdit = false;
     //
     //TODO:methods;
     self.setTrack = function (track) {
@@ -14,15 +14,22 @@ player_app.controller('playerCtrl', ['$scope', '$http', function ($scope, $http)
     self.setCurrentTime = function (cue) {
         setCurrentTime(cue);
     };
-    self.setReply=function($event){
-        $event.stopPropagation();
-        setReply(self);
+    self.setReply = function (cue) {
+        setReply(self, function () {
+            setComments(cue.id);
+        });
     };
-    self.setEdit=function(){
+    self.setEdit = function () {
         setEdit(self);
-    }
-    //
-    //TODO main
+    };
+    self.setComments = function () {
+        setComments(self);
+    };
+    self.close = function () {
+            setSidenav();
+        }
+        //
+        //TODO main
     getVtt(self, $http, function (res) {
         self.vtt = res.data;
 
@@ -46,17 +53,40 @@ player_app.controller('playerCtrl', ['$scope', '$http', function ($scope, $http)
         self.cues = cues;
         $scope.$apply();
     }
-    
-    function setEdit(self){
-        self.isEdit=!self.isEdit;
+
+    function setEdit(self) {
+        self.isEdit = !self.isEdit;
     }
 
     function setCurrentTime(cue) {
         console.info(cue.startTime);
     }
-    
-    function setReply(self){
+
+    function setReply(self, cb) {
         console.info(self);
+        if (angular.isDefined(cb)) {
+            cb();
+        }
+    }
+
+    function setComments(self, cb) {
+        $mdSidenav('comments_view').open();
+        if (angular.isDefined(cb)) {
+            cb();
+        }
+    }
+
+    function setSidenav(cd) {
+        $mdSidenav('comments_view').close()
+        if (angular.isDefined(cb)) {
+            cb();
+        }
+    }
+
+    function getComment(cb) {
+        if (angular.isDefined(cb)) {
+            cb();
+        }
     }
 
 }]);
