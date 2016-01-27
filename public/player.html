@@ -49,7 +49,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <video controls src="videos/Google%20Ideas-%20Project%20Shield.mp4">
+                            <video controls ng-src="videos/Google%20Ideas-%20Project%20Shield.mp4" id='video'>
                                 <track onload='angular.element(this).controller().setTrack(this);' ng-src="{{player.track_url}}" kind="subtitles" srclang="en" label="English" default>
                             </video>
                         </td>
@@ -58,38 +58,103 @@
                             <md-content class="cue" ng-hide="player.isEdit">
                                 <section>
                                     <md-subheader class="md-primary">Track</md-subheader>
+                                    <md-card ng-repeat="cue in player.cues">
+                                        <md-card-title>
+                                            <md-card-title-text>
+                                                <span class="md-subhead">
+                                                    {{$index+1}}. (
+                                                    {{cue.startTime}}
+                                                        &rArr;
+                                                    {{cue.endTime}}
+                                                    )
+                                                </span>
+                                            </md-card-title-text>
+                                        </md-card-title>
+                                        <md-card-content>
+                                            {{cue.text}}
+                                        </md-card-content>
+                                        <md-card-actions layout="row">
+                                            <md-button class="md-icon-button" aria-label="go to" ng-click="player.setVideoCurrentTime(cue)">
+                                                <md-icon>touch_app</md-icon>
+                                            </md-button>
+                                            <md-button class="md-icon-button" aria-label="reply" ng-click="player.setReply(cue)">
+                                                <md-icon>edit</md-icon>
+                                            </md-button>
+                                            <md-button class="md-icon-button" aria-label="reply" ng-click="player.setReply(cue)">
+                                                <md-icon>reply</md-icon>
+                                            </md-button>
+                                        </md-card-actions>
+                                    </md-card>
+                                    <!--            
                                     <md-list layout="column" layout-padding>
-                                        <md-list-item class="secondary-button-padding" ng-repeat="cue in player.cues" ng-click='player.setCurrentTime(cue)'>
-                                            <p>
+                                                                                <md-list-item class="secondary-button-padding" ng-repeat="cue in player.cues" ng-click='player.setCurrentTime(cue)'>
+                                        <md-list-item ng-repeat="cue in player.cues">
+                                            <div class="md-list-item-text">
                                                 <var>{{$index+1}}.</var>
                                                 <samp>{{cue.startTime}}</samp>&rArr;<samp>{{cue.endTime}}</samp>
                                                 <br/> {{cue.text}}
-                                                <p>
-                                                    <md-button class="md-secondary" aria-label="reply" ng-click="player.setReply(cue)">
+                                                <p layout='column'>
+                                                    <md-button class="md-icon-button" aria-label="reply" ng-click="player.setReply(cue)">
+                                                        <md-icon>edit</md-icon>
+                                                    </md-button>
+                                                    <md-button class="md-icon-button" aria-label="reply" ng-click="player.setReply(cue)">
                                                         <md-icon>reply</md-icon>
                                                     </md-button>
+                                                </p>
+                                            </div>
                                         </md-list-item>
                                     </md-list>
+-->
                                 </section>
                             </md-content>
                         </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td layout='row' layout-align="end center">
-                            <md-button class="md-raised" ng-click="player.setEdit()">
-                                Edit
-                                <md-icon>mode_edit</md-icon>
-                            </md-button>
-                            <md-button class="md-raised md-primary">Save
-                                <md-icon>save</md-icon>
-                            </md-button>
-                        </td>
-                    </tr>
-                </tfoot>
             </table>
+            <md-content layout='column'>
+                <div layout='row'>
+                    <md-input-container flex='50'>
+                        <label>Start</label>
+                        <input ng-model="player.tmpStartTime">
+                    </md-input-container>
+                    <p>
+                        <md-button class='md-icon-button' ng-click="player.getVideoCurrentTime('tmpStartTime')">
+                            <md-icon>timer</md-icon>
+                        </md-button>
+                    </p>
+                    <md-input-container flex='50'>
+                        <label>End</label>
+                        <input ng-model="player.tmpEndTime">
+                    </md-input-container>
+                    <p>
+                        <md-button class='md-icon-button' ng-click="player.getVideoCurrentTime('tmpEndTime')">
+                            <md-icon>timer</md-icon>
+                        </md-button>
+                    </p>
+                </div>
+                <div layout='column'>
+                    <md-input-container flex='auto'>
+                        <label>Subtitle</label>
+                        <textarea></textarea>
+                    </md-input-container>
+                    <div layout='row' layout-align="end center">
+                        <md-button class="md-raised md-primary">
+                            Save
+                            <md-icon>save</md-icon>
+                        </md-button>
+                        <md-button class="md-raised md-warn" ng-click="player.subtitleInit()">
+                            Cancel
+                            <md-icon>clear</md-icon>
+                        </md-button>
+                        <!--
+                        <md-button class="md-raised" ng-click="player.setEdit()">
+                            Edit
+                            <md-icon>mode_edit</md-icon>
+                        </md-button>
+-->
+                    </div>
+                </div>
+            </md-content>
         </main>
     </md-content>
     <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="comments_view">
