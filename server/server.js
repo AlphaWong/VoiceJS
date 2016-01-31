@@ -1,84 +1,154 @@
-"use strict"
-var express = require('express'),
+'use strict'
+const express = require('express'),
     multer = require('multer'),
     cors = require('cors'),
     jsonfile = require('jsonfile'),
     util = require('util'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    upload = multer(),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
-var fileName = undefined;
-var commentsDir = './comments/';
+const commentsDir = './comments/';
+let fileName = undefined;
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
-        fileName = Date.now() + '.wav';
-        cb(null, fileName);
-    }
+let storage = multer.diskStorage({
+    destination(req, file, cb) {
+            cb(null, 'uploads/');
+        },
+        filename(req, file, cb) {
+            fileName = Date.now() + '.wav';
+            cb(null, fileName);
+        }
 });
 
-var upload = multer({
-    storage: storage
+const upload = multer({
+    storage
 });
 
 //TODO:Data Base
-var url = 'mongodb://localhost:27017/VideoSubtitleComments';
+const url = 'mongodb://localhost:27017/VideoSubtitleComments';
 mongoose.connect(url);
-var Schema = mongoose.Schema;
-var Comments = new Schema({
-    "video": String,
-    "comments": {
+const Schema = mongoose.Schema;
+const Comments = new Schema({
+    video: String,
+    comments: {
         type: [{
-            "_id": {
+            '_id': {
                 type: ObjectId,
                 default: ObjectId
             },
-            "from": String,
-            "body": String
+            from: String,
+            body: String
     }],
         default: []
     }
 });
-var CommentsTable = mongoose.model('Comments', Comments);
+const CommentsTable = mongoose.model('Comments', Comments);
+
+const Subtitles = new Schema({
+    video: String,
+    from: String,
+    subtitles: {
+        type: [{
+            startTime: String,
+            endTime: String,
+            text: String,
+            comments: {
+                type: [{
+                    '_id': {
+                        type: ObjectId,
+                        default: ObjectId
+                    },
+                    from: String,
+                    body: String
+                    }],
+                default: []
+            }
+    }],
+        default: []
+    }
+});
+
+const SubtitlesTable = mongoose.model('Subtitles', Subtitles);
 //
-var app = express()
+const app = express();
+app.use(cors());
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
 })); // for parsing application/x-www-form-urlencoded
-var router = express.Router();
+const router = express.Router();
 
-router.post('/uploads/voice', upload.single('voice'), function (req, res, next) {
+router.post('/uploads/voice', upload.single('voice'), (req, res, next) => {
     res.sendStatus(200).json({
         url: fileName
     });
 });
 
-router.get('/comments/:comment_id', function (req, res) {
-    var comment_id = req.params.comment_id;
-    CommentsTable.findById(comment_id, function (err, doc) {
+router.get('/subtitles2Json/:subtitle_id', (req, res) => {
+    let _id = req.params.subtitle_id;
+    SubtitlesTable.findById(_id, (err, doc) => {
+        if (err) {
+            return res.status(404).json(doc);
+        }
         res.json(doc);
     });
 });
 
-router.post('/comments/', function (req, res) {
-    console.log('comment post');
-    CommentsTable.create(req.body, function (err, doc) {
+router.get('/subtitles/:subtitle_id', (req, res) => {
+    let _id = req.params.subtitle_id;
+    SubtitlesTable.findById(_id, (err, doc) => {
+        if (err) {
+            return res.status(404).json(doc);
+        }
+        res.type('.vtt');
+        let output = 'WEBVTT\n\n';
+        for (var i = 0; i < doc.subtitles.length; ++i) {
+            output += doc.subtitles[i].startTime + ' --> ';
+            output += doc.subtitles[i].endTime + '\n';
+            output += doc.subtitles[i].text + '\n';
+            output += '\n';
+        }
+        res.send(output);
+    });
+});
+
+router.post('/subtitles', (req, res) => {
+    SubtitlesTable.create(req.body, (err, doc) => {
+        if (err) {
+            return res.status(500).json(err);
+        } else {
+            return res.json(doc);
+        }
+        // saved!
+    });
+});
+router.put('/subtitles/:subtitle_id', (req, res) => {
+    let _id = req.params.subtitle_id;
+    SubtitlesTable.findOneAndUpdate({
+        _id
+    }, req.body, (err, doc) => {
         if (err) {
             return res.json(err);
         } else {
             return res.json(req.body);
         }
-        //            // saved!
-    });
+    })
+});
+router.get('/subtitles/:from/:video/findOne', (req, res) => {
+    console.log(req.params.video)
+    let from = req.params.from,
+        video = encodeURIComponent(req.params.video);
+    SubtitlesTable.findOne({
+        from, video
+    }, (err, subtitle) => {
+        if (err || subtitle == null) {
+            return res.status(404).json(err);
+        }
+        res.json(subtitle);
+    })
 });
 
 app.use('/', router);
-app.use(cors());
-
 app.listen(3000);
