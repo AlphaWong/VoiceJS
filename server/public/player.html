@@ -168,6 +168,10 @@
                 <md-card-header>
                     <md-card-header-text>
                         <span class="md-subhead" ng-bind="playerCtrl.setMask(comment)"></span>
+                        <!--                        <audio src="{{comment.url}}" ng-show="playerCtrl.isVoice(comment)">-->
+                        <audio controls ng-if="playerCtrl.isVoice(comment)">
+                            <source ng-src="{{comment.url}}">
+                        </audio>
                     </md-card-header-text>
                 </md-card-header>
                 <md-card-content ng-bind="comment.body">
@@ -205,11 +209,19 @@
                         <input type="text" id="testInput" ng-model="playerCtrl.tmpReply" placeholder="Enter comment..." required/>
                     </md-input-container>
                     <p flex='auto'>
-                        <md-button class="md-fab md-mini" aria-label="send" ng-click='playerCtrl.sendComment()' ng-disabled='commentsForm.$invalid'>
+                        <md-button class="md-fab md-mini" aria-label="send" ng-click='playerCtrl.sendComment("text")' ng-disabled='commentsForm.$invalid'>
                             <md-icon>send</md-icon>
                         </md-button>
                     </p>
                 </div>
+                <section layout="column">
+                    <md-button class="md-raised md-warn" ng-hide="playerCtrl.isOnAir" ng-click='playerCtrl.getVoice()'>
+                        <md-icon>record_voice_over</md-icon> REC
+                    </md-button>
+                    <md-button class="md-raised" ng-show="playerCtrl.isOnAir" ng-click='playerCtrl.setVoice()'>
+                        <md-icon>stop</md-icon> Send
+                    </md-button>
+                </section>
             </ng-form>
         </md-content>
     </md-sidenav>
@@ -223,5 +235,9 @@
 <script type="application/javascript" src="//code.angularjs.org/snapshot/angular-sanitize.min.js"></script>
 <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.js"></script>
 <script type="application/javascript" src="js/player.js"></script>
+
+<!--WEBRTC-->
+<script src="//cdn.webrtc-experiment.com/RecordRTC.min.js"></script>
+<!--WEBRTC-->
 
 </html>

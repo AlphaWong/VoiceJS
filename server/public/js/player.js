@@ -32,6 +32,22 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.subtitleInComment = undefined;
     self.currentSubtitleInCommentId = undefined;
     //
+
+    //RECORD RTC
+    let recordRTC = undefined;
+    self.isOnAir = false;
+    self.getVoice = () => {
+        getVoice(self, () => {
+
+        });
+    };
+    self.setVoice = () => {
+        setVoice(self, (res) => {
+            self.currentVoiceURL = res.data.url;
+            self.sendComment('voice');
+        });
+    };
+    //
     //TODO:methods;
     self.setEditor = (cue) => {
         setEditor(self, cue);
@@ -60,18 +76,34 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         return `${date.toLocaleDateString()} ${hours}:${minutes} \r by ${from}`;
     };
 
-    self.sendComment = () => {
+    self.isVoice = (comment) => {
+        return angular.isDefined(comment.url)&&comment.url.length>0;
+    };
+
+    self.sendComment = (mode) => {
         getSubtitles(self, (res) => {
             let from = self.from,
-                body = self.tmpReply,
-                target = res.data.subtitles.find((subtitle, index) => {
-                    if (subtitle._id == self.subtitleInComment._id) {
-                        subtitle.comments.push({
-                            from, body
-                        });
-                        return true;
-                    }
-                });
+                bean = undefined;
+            switch (mode) {
+            case 'text':
+                let body = self.tmpReply;
+                    bean = {
+                        from, body
+                    };
+                break;
+            case 'voice':
+                let url = self.currentVoiceURL;
+                    bean = {
+                        from, url
+                    };
+                break;
+            }
+            let target = res.data.subtitles.find((subtitle, index) => {
+                if (subtitle._id == self.subtitleInComment._id) {
+                    subtitle.comments.push(bean);
+                    return true;
+                }
+            });
             setSubtitles(self, res, () => {
                 clearTrack(self, () => {
                     getTrack(self, () => {
@@ -82,6 +114,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                                 self.subtitleInComment = res.data.subtitles.find((subtitle) => {
                                     return subtitle._id == self.currentSubtitleInCommentId;
                                 });
+                                self.subtitleInit();
                             });
                         });
                     });
@@ -115,6 +148,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         self.tmpStartTime = undefined;
         self.tmpEndTime = undefined;
         self.tmpComment = undefined;
+        self.currentVoiceURL = undefined;
+        self.tmpReply = undefined;
         self.isEdit = false;
     };
 
@@ -393,16 +428,52 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         }
     }
 
-    function sendComment(self, comment, cb) {
-        if (angular.isDefined(cb)) {
-            cb(self);
-        }
-    }
-
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-            }]);
+
+    function getVoice(self, cb) {
+        self.isOnAir = true;
+        let option = {
+            audio: true
+        };
+        navigator.getUserMedia(option, (mediaStream) => {
+            recordRTC = RecordRTC(mediaStream, {
+                recorderType: StereoAudioRecorder // optionally force WebAudio API to record audio
+            });
+            recordRTC.startRecording();
+            self.mediaStream = mediaStream;
+        }, () => {
+            console.log("ERROR");
+        })
+        if (angular.isDefined(cb)) {
+            cb(self);
+        }
+    }
+
+    function setVoice(self, cb) {
+        self.isOnAir = false;
+        recordRTC.stopRecording(function (audioURL) {
+            self.mediaStream.stop();
+            let url = `${protocol}//${hostName}:8080/uploads/voice`,
+                formData = new FormData(),
+                blob = recordRTC.getBlob();
+            formData.append('voice', blob);
+            $http.post(url, formData, {
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': undefined
+                }
+            }).then((res) => {
+                if (angular.isDefined(cb)) {
+                    cb(res);
+                }
+            });
+        });
+
+    }
+
+}]);

@@ -10,10 +10,11 @@ const express = require('express'),
 
 const commentsDir = './comments/';
 let fileName = undefined;
+let voicesDir = 'public/uploads/';
 
 let storage = multer.diskStorage({
     destination(req, file, cb) {
-            cb(null, 'public/uploads/');
+            cb(null, voicesDir);
         },
         filename(req, file, cb) {
             fileName = Date.now() + '.wav';
@@ -41,10 +42,17 @@ const Subtitles = new Schema({
             comments: {
                 type: [{
                     from: String,
-                    body: String,
+                    body: {
+                        type: String,
+                        default: ""
+                    },
                     createdAt: {
                         type: Date,
                         default: Date.now
+                    },
+                    url: {
+                        type: String,
+                        default: ""
                     },
                     id: {
                         type: ObjectId //_id
@@ -59,18 +67,22 @@ const Subtitles = new Schema({
 
 const SubtitlesTable = mongoose.model('Subtitles', Subtitles);
 //
-const app = express();
+const app = express(),
+    size = {
+        limit: '50mb'
+    };
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.json(size)); // for parsing application/json
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: true,
+    limit: '50mb'
 })); // for parsing application/x-www-form-urlencoded
 const router = express.Router();
 
 router.post('/uploads/voice', upload.single('voice'), (req, res, next) => {
-    res.sendStatus(200).json({
-        url: fileName
+    res.json({
+        url: `/uploads/${fileName}`
     });
 });
 
@@ -127,7 +139,6 @@ router.put('/subtitles/:subtitle_id', (req, res) => {
 });
 
 router.get('/subtitles/:from/:video/findOne', (req, res) => {
-    console.log(req.params.video)
     let from = req.params.from,
         video = encodeURIComponent(req.params.video);
     SubtitlesTable.findOne({
