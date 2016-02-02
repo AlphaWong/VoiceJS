@@ -13,7 +13,7 @@ let fileName = undefined;
 
 let storage = multer.diskStorage({
     destination(req, file, cb) {
-            cb(null, 'uploads/');
+            cb(null, 'public/uploads/');
         },
         filename(req, file, cb) {
             fileName = Date.now() + '.wav';
@@ -29,21 +29,6 @@ const upload = multer({
 const url = 'mongodb://localhost:27017/VideoSubtitleComments';
 mongoose.connect(url);
 const Schema = mongoose.Schema;
-const Comments = new Schema({
-    video: String,
-    comments: {
-        type: [{
-            '_id': {
-                type: ObjectId,
-                default: ObjectId
-            },
-            from: String,
-            body: String
-    }],
-        default: []
-    }
-});
-const CommentsTable = mongoose.model('Comments', Comments);
 
 const Subtitles = new Schema({
     video: String,
@@ -55,13 +40,16 @@ const Subtitles = new Schema({
             text: String,
             comments: {
                 type: [{
-                    '_id': {
-                        type: ObjectId,
-                        default: ObjectId
-                    },
                     from: String,
-                    body: String
-                    }],
+                    body: String,
+                    createdAt: {
+                        type: Date,
+                        default: Date.now
+                    },
+                    id: {
+                        type: ObjectId //_id
+                    }
+                }],
                 default: []
             }
     }],
@@ -99,7 +87,7 @@ router.get('/subtitles2Json/:subtitle_id', (req, res) => {
 router.get('/subtitles/:subtitle_id', (req, res) => {
     let _id = req.params.subtitle_id;
     SubtitlesTable.findById(_id, (err, doc) => {
-        if (err) {
+        if (err || null) {
             return res.status(404).json(doc);
         }
         res.type('.vtt');
@@ -124,6 +112,7 @@ router.post('/subtitles', (req, res) => {
         // saved!
     });
 });
+
 router.put('/subtitles/:subtitle_id', (req, res) => {
     let _id = req.params.subtitle_id;
     SubtitlesTable.findOneAndUpdate({
@@ -136,6 +125,7 @@ router.put('/subtitles/:subtitle_id', (req, res) => {
         }
     })
 });
+
 router.get('/subtitles/:from/:video/findOne', (req, res) => {
     console.log(req.params.video)
     let from = req.params.from,
@@ -151,4 +141,4 @@ router.get('/subtitles/:from/:video/findOne', (req, res) => {
 });
 
 app.use('/', router);
-app.listen(3000);
+app.listen(8080);

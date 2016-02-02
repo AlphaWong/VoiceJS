@@ -20,7 +20,7 @@ function setRecord2Start() {
                 recordRTC.getDataURL(function (audioURLs) {
                     mediaElement.src = (audioURL);
                     mediaStream.stop();
-                    ajax("POST", "http://127.0.0.1:3000/uploads/voice", recordRTC.getBlob(), function (res) {
+                    ajax("POST", "http://127.0.0.1:8080/uploads/voice", recordRTC.getBlob(), function (res) {
                         console.log(res);
                     });
                 });

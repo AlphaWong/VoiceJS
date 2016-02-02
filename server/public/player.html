@@ -34,7 +34,7 @@
     }
 </style>
 <!-- Angular Material CSS using GitCDN to load directly from `bower-material/master` -->
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.css">
 <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <head>
@@ -49,7 +49,9 @@
                 <tbody>
                     <tr>
                         <td>
-                            <video controls ng-src="videos/Google Ideas- Project Shield.mp4" id='player'>
+                            <!--                            <video controls ng-src="videos/Google Ideas- Project Shield.mp4" id='player'>-->
+                            <!--                            <video controls ng-src="{{playerCtrl.videoURL}}" id='player'>-->
+                            <video controls id='player'>
                                 <!--<track onload='angular.element(this).controller().setTrack(this);' ng-src="{{player.track_url}}" kind="subtitles" srclang="en" label="English" default>-->
                             </video>
                         </td>
@@ -61,16 +63,11 @@
                                         <md-card-title>
                                             <md-card-title-text>
                                                 <span class="md-subhead">
-                                                    {{$index+1}}. (
-                                                    {{cue.startTime}}
-                                                        &rArr;
-                                                    {{cue.endTime}}
-                                                    )
+                                                    {{$index+1}}. ({{cue.startTime}} &rArr; {{cue.endTime}} )
                                                 </span>
                                             </md-card-title-text>
                                         </md-card-title>
-                                        <md-card-content>
-                                            {{cue.text}}
+                                        <md-card-content ng-bind="cue.text">
                                         </md-card-content>
                                         <md-card-actions layout="row">
                                             <md-button class="md-icon-button" aria-label="go to" ng-click="playerCtrl.setVideoCurrentTime(cue)">
@@ -82,7 +79,7 @@
                                             <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)">
                                                 <md-icon>edit</md-icon>
                                             </md-button>
-                                            <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="">
+                                            <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="playerCtrl.removeSubtitle(cue)">
                                                 <md-icon>delete</md-icon>
                                             </md-button>
                                         </md-card-actions>
@@ -95,9 +92,6 @@
             </table>
             <section>
                 <div layout='row'>
-                    <p>
-                        {{player.isEdit}}
-                    </p>
                 </div>
                 <md-content layout='column'>
                     <ng-form name='editor'>
@@ -131,13 +125,13 @@
                                 <textarea ng-model="playerCtrl.tmpComment" required></textarea>
                             </md-input-container>
                             <div layout='row' layout-align="end center">
-                                <md-button ng-disabled="editor.$invalid" class="md-raised md-primary" ng-click='playerCtrl.sendSubtitle()'>
-                                    <span ng-show='player.isEdit'>
-                                Update
+                                <md-button ng-show='playerCtrl.isEdit' ng-disabled="editor.$invalid" class="md-raised md-primary" ng-click='playerCtrl.sendSubtitle("update")'>
+                                    <span>Update
                                 <md-icon>update</md-icon>
                                 </span>
-                                    <span ng-hide='playerCtrl.isEdit'>
-                                Save
+                                </md-button>
+                                <md-button ng-hide='playerCtrl.isEdit' ng-disabled="editor.$invalid" class="md-raised md-primary" ng-click='playerCtrl.sendSubtitle("save")'>
+                                    <span>Save
                                 <md-icon>save</md-icon>
                                 </span>
                                 </md-button>
@@ -146,7 +140,7 @@
                                     Cancel
                                     <md-icon>clear</md-icon>
                                 </md-button>
-                            
+
                             </div>
                         </div>
                     </ng-form>
@@ -159,7 +153,7 @@
             <div class="md-toolbar-tools">
                 <h1 class="md-toolbar-tools">Comments</h1>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="player.close()">
+                <md-button class="md-icon-button" ng-click="playerCtrl.close()">
                     <md-icon>
                         close
                     </md-icon>
@@ -167,22 +161,56 @@
             </div>
         </md-toolbar>
         <md-content layout-padding>
-            <md-list>
-                <md-list-item class="md-3-line md-long-text" ng-repeat="comment in player.comments">
+            <p ng-bind="playerCtrl.subtitleInComment.text"></p>
+            <!--            <md-list>-->
+
+            <md-card ng-repeat="comment in playerCtrl.subtitleInComment.comments">
+                <md-card-header>
+                    <md-card-header-text>
+                        <span class="md-subhead" ng-bind="playerCtrl.setMask(comment)"></span>
+                    </md-card-header-text>
+                </md-card-header>
+                <md-card-content ng-bind="comment.body">
+                </md-card-content>
+                <!--
+                    <md-card-actions layout="row">
+                        <md-button class="md-icon-button" aria-label="go to" ng-click="playerCtrl.setVideoCurrentTime(cue)">
+                            <md-icon>touch_app</md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button md-primary" aria-label="reply" ng-click="playerCtrl.setReply(cue)">
+                            <md-icon>reply</md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)">
+                            <md-icon>edit</md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="playerCtrl.removeSubtitle(cue)">
+                            <md-icon>delete</md-icon>
+                        </md-button>
+                    </md-card-actions>
+-->
+            </md-card>
+
+            <!--
+                <md-list-item class="md-2-line md-long-text" ng-repeat="comment in playerCtrl.subtitleInComment.comments">
                     <div class="md-list-item-text" layout="column">
-                        <h3>{{ comment }}</h3>
-                        <h4>{{ comment }}</h4>
-                        <p>{{ comment }}</p>
+                        <p ng-bind="playerCtrl.setMask(comment)"></p>
+                        <h4 ng-bind="comment.body"></h4>
                     </div>
                 </md-list-item>
             </md-list>
-            <form>
-                <div layout='row'>
-                    <md-input-container md-no-float class='md-block' flex='100'>
-                        <input type="text" id="testInput" ng-model="player.tmp_comment" placeholder="Enter comment..." />
+-->
+            <ng-form name='commentsForm'>
+                <div layout='row' layout-wrap>
+                    <md-input-container md-no-float class='md-block' flex='auto'>
+                        <input type="text" id="testInput" ng-model="playerCtrl.tmpReply" placeholder="Enter comment..." required/>
                     </md-input-container>
+                    <p flex='auto'>
+                        <md-button class="md-fab md-mini" aria-label="send" ng-click='playerCtrl.sendComment()' ng-disabled='commentsForm.$invalid'>
+                            <md-icon>send</md-icon>
+                        </md-button>
+                    </p>
                 </div>
-            </form>
+            </ng-form>
         </md-content>
     </md-sidenav>
 </body>
@@ -193,7 +221,7 @@
 <script type="application/javascript" src="//code.angularjs.org/snapshot/angular-touch.min.js"></script>
 <script type="application/javascript" src="//code.angularjs.org/snapshot/angular-cookies.min.js"></script>
 <script type="application/javascript" src="//code.angularjs.org/snapshot/angular-sanitize.min.js"></script>
-<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.js"></script>
 <script type="application/javascript" src="js/player.js"></script>
 
 </html>
