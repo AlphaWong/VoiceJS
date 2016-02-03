@@ -15,6 +15,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     //    self.from = 'Alpha';
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
+    self.whoami = getParameterByName('whoami');
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
     //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.from}/${self.video}/findOne`;
@@ -99,7 +100,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                 break;
             }
             let target = res.data.subtitles.find((subtitle, index) => {
-                if (subtitle._id == self.subtitleInComment._id) {
+                if (subtitle._id === self.subtitleInComment._id) {
                     subtitle.comments.push(bean);
                     return true;
                 }
@@ -162,7 +163,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                     break;
                 case 'update':
                     let target = res.data.subtitles.find((_subtitle) => {
-                        if (_subtitle._id == self.tmpSubtitleId) {
+                        if (_subtitle._id === self.tmpSubtitleId) {
                             _subtitle.startTime = subtitle.startTime;
                             _subtitle.endTime = subtitle.endTime;
                             _subtitle.text = subtitle.text;
@@ -266,7 +267,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     function getSubutitleById(self, cue, res, cb) {
         let target = res.data.subtitles.filter((subtitle) => {
-            return cue._id == subtitle._id;
+            return cue._id === subtitle._id;
         });
         if (angular.isDefined(cb)) {
             cb(target);
@@ -305,19 +306,19 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
             seconds = sec_num - (hours * 3600) - (minutes * 60),
             milliseconds = Number.parseInt(((Math.round(num * 1000) / 1000) - sec_num) * 1000);
 
-        if (hours.toString().length == 1) {
+        if (hours.toString().length === 1) {
             hours = "0" + hours + "";
         }
-        if (minutes.toString().length == 1) {
+        if (minutes.toString().length === 1) {
             minutes = "0" + minutes;
         }
-        if (seconds.toString().length == 1) {
+        if (seconds.toString().length === 1) {
             seconds = "0" + seconds + "";
         }
 
-        if (milliseconds.toString().length == 2) {
+        if (milliseconds.toString().length === 2) {
             milliseconds = "0" + milliseconds;
-        } else if (milliseconds.toString().length == 1) {
+        } else if (milliseconds.toString().length === 1) {
             milliseconds = "00" + milliseconds + "";
         }
 
@@ -471,8 +472,9 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function isOwner(self, res, cb) {
-        self.owner = res.data.from;
-        self.isOwner = self.owner == self.from;
+//        self.owner = res.data.from;
+        self.isOwner = self.whoami === self.from;
+        console.log(self.whoami);
         if (angular.isDefined(cb)) {
             cb(self);
         }
