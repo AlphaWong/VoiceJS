@@ -77,7 +77,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     };
 
     self.isVoice = (comment) => {
-        return angular.isDefined(comment.url)&&comment.url.length>0;
+        return angular.isDefined(comment.url) && comment.url.length > 0;
     };
 
     self.sendComment = (mode) => {
@@ -87,15 +87,15 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
             switch (mode) {
             case 'text':
                 let body = self.tmpReply;
-                    bean = {
-                        from, body
-                    };
+                bean = {
+                    from, body
+                };
                 break;
             case 'voice':
                 let url = self.currentVoiceURL;
-                    bean = {
-                        from, url
-                    };
+                bean = {
+                    from, url
+                };
                 break;
             }
             let target = res.data.subtitles.find((subtitle, index) => {
@@ -206,19 +206,32 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     //    
 
     //TODO:main
-    isExist(self, $http, (res) => {
-        setSelf('subtitleId', self, res.data, () => {
-            clearTrack(self, () => {
-                getTrack(self, () => {
-                    getSubtitles(self, (res) => {
-                        setTrack(res.data.subtitles);
+    isVaildParms(self, () => {
+        isExist(self, $http, (res) => {
+            setSelf('subtitleId', self, res.data, () => {
+                clearTrack(self, () => {
+                    getTrack(self, () => {
+                        getSubtitles(self, (res) => {
+                            setTrack(res.data.subtitles);
+                        });
                     });
                 });
             });
         });
-
     });
+
+
     //
+
+    function isVaildParms(self, cb) {
+        if (self.video.length <= 0 || self.from <= 0) {
+            console.warn(`missing parms`);
+        } else {
+            if (angular.isDefined(cb)) {
+                cb();
+            }
+        }
+    }
 
     function clearComments(self, cb) {
         self.currentSubtitleInCommentId = self.subtitleInComment._id + "";
