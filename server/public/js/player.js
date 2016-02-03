@@ -10,15 +10,15 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.player = document.getElementById('player');
     //    self.subtitleId = '56a9b62a3804af59421c5093';
     self.subtitleId = undefined;
-
-
+    self.owner = undefined;
     //    self.video = encodeURIComponent(self.player.getAttribute('ng-src'));
     //    self.from = 'Alpha';
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
-    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.from}/${self.video}/findOne`;
+    //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.from}/${self.video}/findOne`;
+    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.video}/findOne`;
 
     self.isEdit = false;
     self.tmpStartTime = undefined;
@@ -208,11 +208,13 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     //TODO:main
     isVaildParms(self, () => {
         isExist(self, $http, (res) => {
-            setSelf('subtitleId', self, res.data, () => {
-                clearTrack(self, () => {
-                    getTrack(self, () => {
-                        getSubtitles(self, (res) => {
-                            setTrack(res.data.subtitles);
+            isOwner(self, res, () => {
+                setSelf('subtitleId', self, res.data, () => {
+                    clearTrack(self, () => {
+                        getTrack(self, () => {
+                            getSubtitles(self, (res) => {
+                                setTrack(res.data.subtitles);
+                            });
                         });
                     });
                 });
@@ -408,13 +410,14 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     function setSubtitles(self, res, cb) {
         let url = `${protocol}//${hostName}:8080/subtitles/${self.subtitleId}`;
         $http.put(url, res.data).then((res) => {
-            console.info(res);
-        }, (res) => {
 
+            if (angular.isDefined(cb)) {
+                cb();
+            }
+        }, (res) => {
+            console.info(res);
         })
-        if (angular.isDefined(cb)) {
-            cb();
-        }
+
     }
 
     function setOneNewSubtitleObject(self, $http, cb) {
@@ -462,6 +465,14 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         }, () => {
             console.log("ERROR");
         })
+        if (angular.isDefined(cb)) {
+            cb(self);
+        }
+    }
+
+    function isOwner(self, res, cb) {
+        self.owner = res.data.from;
+        self.isOwner = self.owner == self.from;
         if (angular.isDefined(cb)) {
             cb(self);
         }

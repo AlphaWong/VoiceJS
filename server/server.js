@@ -116,6 +116,7 @@ if (cluster.isMaster) {
             }
             res.type('.vtt');
             let output = 'WEBVTT\n\n';
+
             for (var i = 0; i < doc.subtitles.length; ++i) {
                 output += doc.subtitles[i].startTime + ' --> ';
                 output += doc.subtitles[i].endTime + '\n';
@@ -150,11 +151,13 @@ if (cluster.isMaster) {
         })
     });
 
-    router.get('/subtitles/:from/:video/findOne', (req, res) => {
-        let from = req.params.from,
-            video = encodeURIComponent(req.params.video);
+    //    router.get('/subtitles/:from/:video/findOne', (req, res) => {
+    router.get('/subtitles/:video/findOne', (req, res) => {
+        //        let from = req.params.from,
+        let video = encodeURIComponent(req.params.video);
         SubtitlesTable.findOne({
-            from, video
+            //            from, video
+            video
         }, (err, subtitle) => {
             if (err || subtitle == null) {
                 return res.status(404).json(err);
