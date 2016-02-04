@@ -18,8 +18,34 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.whoami = getParameterByName('whoami');
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
-    //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.from}/${self.video}/findOne`;
-    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.video}/findOne`;
+    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.from}/${self.video}/findOne`;
+    //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.video}/findOne`;
+
+    //Socket
+    self.socketURL = `${protocol}//${hostName}:8080`;
+    let socket = io.connect(self.socketURL);
+    socket.on('status', function (data) {
+        console.log(data);
+        socket.on('update', function (data) {
+            console.log(data);
+            if (data._id === self.subtitleId) {
+                clearTrack(self, () => {
+                    getTrack(self, () => {
+                        setTrack(data.subtitles, (self) => {
+                            clearComments(self, () => {
+                                self.subtitleInComment = data.subtitles.find((subtitle) => {
+                                    return subtitle._id == self.currentSubtitleInCommentId;
+                                });
+                                $scope.$apply();
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    });
+
+    //
 
     self.isEdit = false;
     self.tmpStartTime = undefined;
@@ -83,7 +109,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     self.sendComment = (mode) => {
         getSubtitles(self, (res) => {
-            let from = self.from,
+            let from = self.whoami,
                 bean = undefined;
             switch (mode) {
             case 'text':
@@ -106,20 +132,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                 }
             });
             setSubtitles(self, res, () => {
-                clearTrack(self, () => {
-                    getTrack(self, () => {
-                        getSubtitles(self, (res) => {
-                            setTrack(res.data.subtitles);
-                            self.subtitleInit();
-                            clearComments(self, () => {
-                                self.subtitleInComment = res.data.subtitles.find((subtitle) => {
-                                    return subtitle._id == self.currentSubtitleInCommentId;
-                                });
-                                self.subtitleInit();
-                            });
-                        });
-                    });
-                });
+                self.subtitleInit();
             });
         });
     };
@@ -173,14 +186,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                     break;
                 }
                 setSubtitles(self, res, () => {
-                    clearTrack(self, () => {
-                        getTrack(self, () => {
-                            getSubtitles(self, (res) => {
-                                setTrack(res.data.subtitles);
-                                self.subtitleInit();
-                            });
-                        });
-                    });
+                    self.subtitleInit();
                 });
             });
         });
@@ -224,10 +230,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     });
 
 
-    //
-
     function isVaildParms(self, cb) {
-        if (self.video.length <= 0 || self.from <= 0) {
+        if (self.video.length <= 0 || self.from <= 0 || self.whoami <= 0) {
             console.warn(`missing parms`);
         } else {
             if (angular.isDefined(cb)) {
@@ -237,7 +241,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function clearComments(self, cb) {
-        self.currentSubtitleInCommentId = self.subtitleInComment._id + "";
+        //        self.currentSubtitleInCommentId = self.subtitleInComment._id + "";
+        self.currentSubtitleInCommentId = angular.isDefined(self.subtitleInComment) ? self.subtitleInComment._id + "" : undefined;
         self.subtitleInComment = undefined;
         if (angular.isDefined(cb)) {
             cb();
@@ -343,8 +348,16 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         });
     }
 
-    function setTrack(cues) {
-        self.cues = cues;
+    function setTrack(cues, cb) {
+        angular.forEach(cues, (item) => {
+            getSecondFromTimeMask(item.startTime, (second) => {
+                item.second = second;
+            })
+            self.cues = cues;
+        });
+        if (angular.isDefined(cb)) {
+            cb(self);
+        }
     }
 
     function setCurrentTime(cue) {
@@ -354,7 +367,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     function setReply(self, cue, cb) {
         self.subtitleInComment = cue;
         if (angular.isDefined(cb)) {
-            cb();
+            cb(self);
         }
     }
 
@@ -472,7 +485,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function isOwner(self, res, cb) {
-//        self.owner = res.data.from;
+        //        self.owner = res.data.from;
         self.isOwner = self.whoami === self.from;
         console.log(self.whoami);
         if (angular.isDefined(cb)) {

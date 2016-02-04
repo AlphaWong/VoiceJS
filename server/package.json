@@ -18,6 +18,7 @@
     "mongoose": "^4.3.7",
     "multer": "^1.1.0",
     "nodemon": "^1.8.1",
-    "objectid": "^3.2.1"
+    "objectid": "^3.2.1",
+    "socket.io": "^1.4.5"
   }
 }
