@@ -86,7 +86,7 @@ const app = express(),
         limit: '50mb'
     };
 app.use(cors());
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json(size)); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true,
