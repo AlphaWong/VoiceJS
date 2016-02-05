@@ -6,7 +6,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     //TODO:attributes;
     const self = this,
         protocol = window.location.protocol,
-        hostName = window.location.hostname;
+        hostName = window.location.hostname,
+        port = '80';
     self.player = document.getElementById('player');
     //    self.subtitleId = '56a9b62a3804af59421c5093';
     self.subtitleId = undefined;
@@ -18,11 +19,11 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.whoami = getParameterByName('whoami');
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
-    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.from}/${self.video}/findOne`;
+    self.checkURL = `${protocol}//${hostName}:80/subtitles/${self.from}/${self.video}/findOne`;
     //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.video}/findOne`;
 
     //Socket
-    self.socketURL = `${protocol}//${hostName}:8080`;
+    self.socketURL = `${protocol}//${hostName}:80`;
     let socket = io.connect(self.socketURL);
     socket.on('status', function (data) {
         console.log(data);
@@ -281,7 +282,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     function getTrack(self, cb) {
         let track = document.createElement('track'),
-            track_url = `${protocol}//${hostName}:8080/subtitles/${self.subtitleId}`;
+            track_url = `${protocol}//${hostName}:80/subtitles/${self.subtitleId}`;
         track.src = track_url;
         track.kind = "subtitles";
         track.srclang = "en";
@@ -409,7 +410,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function getSubtitles(self, cb) {
-        let getLatestURL = `${protocol}//${hostName}:8080/subtitles2Json/${self.subtitleId}`;
+        let getLatestURL = `${protocol}//${hostName}:80/subtitles2Json/${self.subtitleId}`;
         $http.get(getLatestURL).then((res) => {
             if (angular.isDefined(cb)) {
                 cb(res);
@@ -422,7 +423,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
 
     function setSubtitles(self, res, cb) {
-        let url = `${protocol}//${hostName}:8080/subtitles/${self.subtitleId}`;
+        let url = `${protocol}//${hostName}:80/subtitles/${self.subtitleId}`;
         $http.put(url, res.data).then((res) => {
 
             if (angular.isDefined(cb)) {
@@ -437,7 +438,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     function setOneNewSubtitleObject(self, $http, cb) {
         let from = self.from,
             video = self.video,
-            url = `${protocol}//${hostName}:8080/subtitles/`;
+            url = `${protocol}//${hostName}:80/subtitles/`;
         $http.post(url, {
             from,
             video
@@ -497,7 +498,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         self.isOnAir = false;
         recordRTC.stopRecording(function (audioURL) {
             self.mediaStream.stop();
-            let url = `${protocol}//${hostName}:8080/uploads/voice`,
+            let url = `${protocol}//${hostName}:80/uploads/voice`,
                 formData = new FormData(),
                 blob = recordRTC.getBlob();
             formData.append('voice', blob);
