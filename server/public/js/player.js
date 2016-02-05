@@ -19,7 +19,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.whoami = getParameterByName('whoami');
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
-    self.checkURL = `${protocol}//${hostName}:80/subtitles/${self.from}/${self.video}/findOne`;
+    self.checkURL = `${protocol}//${hostName}:${port}/subtitles/${self.from}/${self.video}/findOne`;
     //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.video}/findOne`;
 
     //Socket
@@ -282,7 +282,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     function getTrack(self, cb) {
         let track = document.createElement('track'),
-            track_url = `${protocol}//${hostName}:80/subtitles/${self.subtitleId}`;
+            track_url = `${protocol}//${hostName}:${port}/subtitles/${self.subtitleId}`;
         track.src = track_url;
         track.kind = "subtitles";
         track.srclang = "en";
@@ -410,7 +410,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function getSubtitles(self, cb) {
-        let getLatestURL = `${protocol}//${hostName}:80/subtitles2Json/${self.subtitleId}`;
+        let getLatestURL = `${protocol}//${hostName}:${port}/subtitles2Json/${self.subtitleId}`;
         $http.get(getLatestURL).then((res) => {
             if (angular.isDefined(cb)) {
                 cb(res);
@@ -423,7 +423,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
 
     function setSubtitles(self, res, cb) {
-        let url = `${protocol}//${hostName}:80/subtitles/${self.subtitleId}`;
+        let url = `${protocol}//${hostName}:${port}/subtitles/${self.subtitleId}`;
         $http.put(url, res.data).then((res) => {
 
             if (angular.isDefined(cb)) {
@@ -438,7 +438,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     function setOneNewSubtitleObject(self, $http, cb) {
         let from = self.from,
             video = self.video,
-            url = `${protocol}//${hostName}:80/subtitles/`;
+            url = `${protocol}//${hostName}:${port}/subtitles/`;
         $http.post(url, {
             from,
             video
