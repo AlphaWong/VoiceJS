@@ -179,15 +179,13 @@ router.get('/subtitles/:from/:video/findOne', (req, res) => {
 });
 
 app.use('/', router);
-//app.listen(8080);
-//const https = require('https'),
-//    fs = require('fs'),
-//    sslOptions = {
-//        key: fs.readFileSync(__dirname + '/../ssl/server.key'),
-//        cert: fs.readFileSync(__dirname + '/../ssl/server.pem')
-//    },
-//    server = https.createServer(sslOptions, app);;
-let server = require('http').createServer(app),
+const https = require('https'),
+    fs = require('fs'),
+    sslOptions = {
+        key: fs.readFileSync(__dirname + '/../ssl/server.key'),
+        cert: fs.readFileSync(__dirname + '/../ssl/server.pem')
+    },
+    server = https.createServer(sslOptions, app);;
 io = require('socket.io')(server);
 io.on('connection', function (_socket) {
     socket = _socket;
@@ -195,5 +193,5 @@ io.on('connection', function (_socket) {
         status: 'connected'
     });
 });
-server.listen(80);
+server.listen(443);
 //}

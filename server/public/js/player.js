@@ -7,23 +7,20 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     const self = this,
         protocol = window.location.protocol,
         hostName = window.location.hostname,
-        port = '80';
+        port = '443';
     self.player = document.getElementById('player');
-    //    self.subtitleId = '56a9b62a3804af59421c5093';
     self.subtitleId = undefined;
     self.owner = undefined;
-    //    self.video = encodeURIComponent(self.player.getAttribute('ng-src'));
-    //    self.from = 'Alpha';
+
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
     self.whoami = getParameterByName('whoami');
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
     self.checkURL = `${protocol}//${hostName}:${port}/subtitles/${self.from}/${self.video}/findOne`;
-    //    self.checkURL = `${protocol}//${hostName}:8080/subtitles/${self.video}/findOne`;
 
     //Socket
-    self.socketURL = `${protocol}//${hostName}:80`;
+    self.socketURL = `${protocol}//${hostName}:${port}`;
     let socket = io.connect(self.socketURL);
     socket.on('status', function (data) {
         console.log(data);
@@ -498,7 +495,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         self.isOnAir = false;
         recordRTC.stopRecording(function (audioURL) {
             self.mediaStream.stop();
-            let url = `${protocol}//${hostName}:80/uploads/voice`,
+            let url = `${protocol}//${hostName}:${port}/uploads/voice`,
                 formData = new FormData(),
                 blob = recordRTC.getBlob();
             formData.append('voice', blob);
