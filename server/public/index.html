@@ -58,7 +58,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>html 5 player</title>
+    <title>Comment on micro-teaching video</title>
 </head>
 
 <body oncontextmenu="return false" ng-app="player_app" ng-controller="playerCtrl as playerCtrl" ng-cloak ng-strict-di>
@@ -75,7 +75,7 @@
                         <td rowspan="2">
                             <md-content class="cue">
                                 <section>
-                                    <md-subheader class="md-primary">Track &lpar;{{playerCtrl.cues.length}}&rpar;</md-subheader>
+                                    <md-subheader ng-style="{color:'rebeccapurple'}">Number of caption : {{playerCtrl.cues.length}}</md-subheader>
                                     <md-card ng-repeat="cue in playerCtrl.cues|orderBy:'second'">
                                         <md-card-title>
                                             <md-card-title-text>
@@ -88,20 +88,20 @@
                                         </md-card-content>
                                         <md-card-actions layout="row">
                                             <md-button class="md-icon-button" aria-label="go to" ng-click="playerCtrl.setVideoCurrentTime(cue)">
-                                                <md-icon>touch_app</md-icon>
+                                                <md-icon ng-style="{color:'limegreen'}">touch_app</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Go to
                                                 </md-tooltip>
                                             </md-button>
-                                            <md-button class="md-icon-button md-primary" aria-label="reply" ng-click="playerCtrl.setReply(cue)">
-                                                <md-icon>comment</md-icon>
+                                            <md-button class="md-icon-button" aria-label="reply" ng-click="playerCtrl.setReply(cue)">
+                                                <md-icon ng-style="{color:'lightseagreen'}">comment</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Comment
                                                 </md-tooltip>
                                             </md-button>
-                                            <span ng-bind="cue.comments.length"></span>
+                                            <span ng-style="{color:'seagreen'}" ng-bind="cue.comments.length"></span>
                                             <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)" ng-disabled="!playerCtrl.isOwner">
-                                                <md-icon>edit</md-icon>
+                                                <md-icon ng-style="{color:'seagreen'}">edit</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Edit
                                                 </md-tooltip>
@@ -127,23 +127,24 @@
                                     <ng-form name='editor'>
                                         <div layout='row'>
                                             <section flex='auto' layout='row'>
-                                                <md-input-container flex='auto'>
+                                                
+												<md-input-container flex='auto'>
                                                     <label>Start</label>
+													<md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpStartTime')">timer</md-icon>
                                                     <input ng-model="playerCtrl.tmpStartTime" required>
-                                                    <md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpStartTime')">timer</md-icon>
                                                 </md-input-container>
                                             </section>
                                             <section flex='auto' layout='row'>
                                                 <md-input-container flex='auto'>
                                                     <label>End</label>
+													<md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpEndTime')">timer</md-icon>
                                                     <input ng-model="playerCtrl.tmpEndTime" required>
-                                                    <md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpEndTime')">timer</md-icon>
                                                 </md-input-container>
                                             </section>
                                         </div>
                                         <div layout='column'>
                                             <md-input-container flex='auto' ng-style="{'margin': '0px','padding': '0px'}">
-                                                <label>Subtitle</label>
+                                                <label>Caption</label>
                                                 <textarea ng-model="playerCtrl.tmpComment" required></textarea>
                                             </md-input-container>
                                             <div layout='row' layout-align="end center" ng-style="{'margin': '0px','padding': '0px'}">
@@ -176,8 +177,8 @@
     </md-content>
     <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="comments_view">
         <md-toolbar class="md-theme-light">
-            <div class="md-toolbar-tools">
-                <h1 class="md-toolbar-tools">Comments</h1>
+            <div class="md-toolbar-tools" ng-style="{'background-color':'lightseagreen'}">
+                <h1 class="md-toolbar-tools" ng-style="{'color':'white'}">Comments</h1>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="playerCtrl.close()">
                     <md-icon>

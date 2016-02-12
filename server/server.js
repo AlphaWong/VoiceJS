@@ -182,10 +182,10 @@ app.use('/', router);
 const https = require('https'),
     fs = require('fs'),
     sslOptions = {
-        key: fs.readFileSync(__dirname + '/../ssl/server.key'),
-        cert: fs.readFileSync(__dirname + '/../ssl/server.pem')
+        key: fs.readFileSync(__dirname + '/SSL/keys/educstpf.pem'),
+        cert: fs.readFileSync(__dirname + '/SSL/csr/educstpf.crt')
     },
-    server = https.createServer(sslOptions, app);;
+    server = https.createServer(sslOptions, app),
 io = require('socket.io')(server);
 io.on('connection', function (_socket) {
     socket = _socket;
