@@ -93,13 +93,13 @@
                                                     Go to
                                                 </md-tooltip>
                                             </md-button>
-                                            <md-button class="md-icon-button" aria-label="reply" ng-click="playerCtrl.setReply(cue)" ng-hide="playerCtrl.whoami<=0">
+                                            <md-button class="md-icon-button" aria-label="reply" ng-click="playerCtrl.setReply(cue)">
                                                 <md-icon ng-style="{color:'lightseagreen'}">comment</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Comment
                                                 </md-tooltip>
                                             </md-button>
-                                            <span ng-style="{color:'seagreen'}" ng-bind="cue.comments.length" ng-hide="playerCtrl.whoami<=0"></span>
+                                            <span ng-style="{color:'seagreen'}" ng-bind="cue.comments.length"></span>
                                             <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)" ng-hide="!playerCtrl.isOwner">
                                                 <md-icon ng-style="{color:'seagreen'}">edit</md-icon>
                                                 <md-tooltip md-direction="bottom">
@@ -202,7 +202,7 @@
                 </md-card-content>
             </md-card>
             <ng-form name='commentsForm'>
-                <div layout='row' layout-wrap>
+                <div layout='row' layout-wrap ng-hide="playerCtrl.whoami<=0">
                     <md-input-container md-no-float class='md-block' flex='auto'>
                         <input type="text" id="testInput" ng-model="playerCtrl.tmpReply" placeholder="Enter comment..." required/>
                         <md-icon aria-label="function buttons" ng-style="{'cursor':'pointer'}">
