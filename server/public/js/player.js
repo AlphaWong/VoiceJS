@@ -15,6 +15,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
     self.whoami = getParameterByName('whoami');
+	
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
     self.checkURL = `${protocol}//${hostName}:${port}/subtitles/${self.from}/${self.video}/findOne`;
@@ -229,7 +230,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
 
     function isVaildParms(self, cb) {
-        if (self.video.length <= 0 || self.from <= 0 || self.whoami <= 0) {
+        if (self.video.length <= 0 || self.from <= 0) {
             console.warn(`missing parms`);
         } else {
             if (angular.isDefined(cb)) {
@@ -490,7 +491,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
             cb(self);
         }
     }
-
+	
     function setVoice(self, cb) {
         self.isOnAir = false;
         recordRTC.stopRecording(function (audioURL) {

@@ -93,20 +93,20 @@
                                                     Go to
                                                 </md-tooltip>
                                             </md-button>
-                                            <md-button class="md-icon-button" aria-label="reply" ng-click="playerCtrl.setReply(cue)">
+                                            <md-button class="md-icon-button" aria-label="reply" ng-click="playerCtrl.setReply(cue)" ng-hide="playerCtrl.whoami<=0">
                                                 <md-icon ng-style="{color:'lightseagreen'}">comment</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Comment
                                                 </md-tooltip>
                                             </md-button>
-                                            <span ng-style="{color:'seagreen'}" ng-bind="cue.comments.length"></span>
-                                            <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)" ng-disabled="!playerCtrl.isOwner">
+                                            <span ng-style="{color:'seagreen'}" ng-bind="cue.comments.length" ng-hide="playerCtrl.whoami<=0"></span>
+                                            <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)" ng-hide="!playerCtrl.isOwner">
                                                 <md-icon ng-style="{color:'seagreen'}">edit</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Edit
                                                 </md-tooltip>
                                             </md-button>
-                                            <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="playerCtrl.removeSubtitle(cue)" ng-disabled="!playerCtrl.isOwner">
+                                            <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="playerCtrl.removeSubtitle(cue)" ng-hide="!playerCtrl.isOwner">
                                                 <md-icon>delete</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Delete
