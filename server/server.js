@@ -7,7 +7,8 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     //    cluster = require('cluster'),
-    ObjectId = mongoose.Schema.Types.ObjectId;
+    ObjectId = mongoose.Schema.Types.ObjectId,
+	morgan = require('morgan');
 
 const commentsDir = './comments/';
 let fileName = undefined;
@@ -178,6 +179,10 @@ router.get('/subtitles/:from/:video/findOne', (req, res) => {
     })
 });
 
+const skip=(req, res) => { return res.statusCode < 400 };
+app.use(morgan('combined', {
+	skip
+}));//Express.Log API
 app.use('/', router);
 const https = require('https'),
     fs = require('fs'),
