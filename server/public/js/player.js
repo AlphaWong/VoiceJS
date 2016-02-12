@@ -351,9 +351,9 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         angular.forEach(cues, (item) => {
             getSecondFromTimeMask(item.startTime, (second) => {
                 item.second = second;
-            })
-            self.cues = cues;
+            });
         });
+		self.cues = cues;
         if (angular.isDefined(cb)) {
             cb(self);
         }

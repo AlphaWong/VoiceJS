@@ -75,7 +75,7 @@
                         <td rowspan="2">
                             <md-content class="cue">
                                 <section>
-                                    <md-subheader ng-style="{color:'rebeccapurple'}">Number of caption : {{playerCtrl.cues.length}}</md-subheader>
+                                    <md-subheader ng-style="{color:'rebeccapurple'}">Number of caption : {{playerCtrl.cues.length||0}}</md-subheader>
                                     <md-card ng-repeat="cue in playerCtrl.cues|orderBy:'second'">
                                         <md-card-title>
                                             <md-card-title-text>
