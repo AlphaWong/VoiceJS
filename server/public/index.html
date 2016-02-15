@@ -100,13 +100,13 @@
                                                 </md-tooltip>
                                             </md-button>
                                             <span ng-style="{color:'seagreen'}" ng-bind="cue.comments.length"></span>
-                                            <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)" ng-hide="!playerCtrl.isOwner">
+                                            <md-button class="md-icon-button" aria-label="edit" ng-click="playerCtrl.setEditor(cue)" ng-show="playerCtrl.isOwner||playerCtrl.group!=='student'">
                                                 <md-icon ng-style="{color:'seagreen'}">edit</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Edit
                                                 </md-tooltip>
                                             </md-button>
-                                            <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="playerCtrl.removeSubtitle(cue)" ng-hide="!playerCtrl.isOwner">
+                                            <md-button class="md-icon-button md-warn" aria-label="delete" ng-click="playerCtrl.removeSubtitle(cue)" ng-show="playerCtrl.isOwner||playerCtrl.group!=='student'">
                                                 <md-icon>delete</md-icon>
                                                 <md-tooltip md-direction="bottom">
                                                     Delete
@@ -123,7 +123,7 @@
                             <section>
                                 <div layout='row'>
                                 </div>
-                                <md-content layout='column' ng-if="playerCtrl.isOwner">
+                                <md-content layout='column' ng-if="playerCtrl.isOwner||playerCtrl.group!=='student'">
                                     <ng-form name='editor'>
                                         <div layout='row'>
                                             <section flex='auto' layout='row'>
@@ -218,7 +218,19 @@
         </md-content>
     </md-sidenav>
 </body>
+    
+<script>
+(function () {
+  var trident = {
+    string: navigator.userAgent.match(/Trident\/(\d+)/)
+  };
 
+  if (trident.string) {
+    document.body.innerHTML = '<h1>Please use Google Chrome</h1>';
+  }
+})();
+</script>    
+    
 <!--Socket IO-->
 <script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
 <!--Socket IO-->
@@ -244,4 +256,5 @@
 <!--Main-->
 
 
+    
 </html>

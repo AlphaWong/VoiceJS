@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 var player_app = angular.module('player_app', ['ngMaterial']);
 player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter', function ($scope, $http, $mdSidenav, $filter) {
     //TODO: Scope attributes;
@@ -15,7 +15,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
     self.whoami = getParameterByName('whoami');
-	
+    self.group = getParameterByName('group').toLowerCase()||"student";
+
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
     self.checkURL = `${protocol}//${hostName}:${port}/subtitles/${self.from}/${self.video}/findOne`;
@@ -353,7 +354,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                 item.second = second;
             });
         });
-		self.cues = cues;
+        self.cues = cues;
         if (angular.isDefined(cb)) {
             cb(self);
         }
@@ -484,14 +485,12 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function isOwner(self, res, cb) {
-        //        self.owner = res.data.from;
         self.isOwner = self.whoami === self.from;
-        console.log(self.whoami);
         if (angular.isDefined(cb)) {
             cb(self);
         }
     }
-	
+
     function setVoice(self, cb) {
         self.isOnAir = false;
         recordRTC.stopRecording(function (audioURL) {
