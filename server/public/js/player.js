@@ -241,7 +241,6 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function clearComments(self, cb) {
-        //        self.currentSubtitleInCommentId = self.subtitleInComment._id + "";
         self.currentSubtitleInCommentId = angular.isDefined(self.subtitleInComment) ? self.subtitleInComment._id + "" : undefined;
         self.subtitleInComment = undefined;
         if (angular.isDefined(cb)) {

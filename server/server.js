@@ -8,7 +8,7 @@ const express = require('express'),
     mongoose = require('mongoose'),
     //    cluster = require('cluster'),
     ObjectId = mongoose.Schema.Types.ObjectId,
-	morgan = require('morgan');
+    morgan = require('morgan');
 
 const commentsDir = './comments/';
 let fileName = undefined;
@@ -80,9 +80,8 @@ const Subtitles = new Schema({
     }
 });
 
-const SubtitlesTable = mongoose.model('Subtitles', Subtitles);
-//
-const app = express(),
+const SubtitlesTable = mongoose.model('Subtitles', Subtitles),
+    app = express(),
     size = {
         limit: '50mb'
     };
@@ -179,10 +178,12 @@ router.get('/subtitles/:from/:video/findOne', (req, res) => {
     })
 });
 
-const skip=(req, res) => { return res.statusCode < 400 };
+const skip = (req, res) => {
+    return res.statusCode < 400
+};
 app.use(morgan('combined', {
-	skip
-}));//Express.Log API
+    skip
+})); //Express.Log API
 app.use('/', router);
 const https = require('https'),
     fs = require('fs'),
@@ -191,7 +192,7 @@ const https = require('https'),
         cert: fs.readFileSync(__dirname + '/SSL/csr/educstpf.crt')
     },
     server = https.createServer(sslOptions, app),
-io = require('socket.io')(server);
+    io = require('socket.io')(server);
 io.on('connection', function (_socket) {
     socket = _socket;
     socket.emit('status', {
