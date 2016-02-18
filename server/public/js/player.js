@@ -527,6 +527,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function setSpeech2Text(self, cb) {
+        self.isTextToSpeech=true;
         if (angular.isUndefined(self.recognitionAPI)) {
             self.recognitionAPI = new webkitSpeechRecognition();
             self.recognitionAPI.continuous = true;
@@ -542,7 +543,6 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                         interim_transcript += event.results[i][0].transcript;
                     }
                 }
-                self.isTextToSpeech=true;
                 //            final_transcript = capitalize(final_transcript);
                 self.tmpReply += final_transcript;
                 $scope.$apply();
