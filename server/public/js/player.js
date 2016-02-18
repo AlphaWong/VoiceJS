@@ -524,7 +524,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
             self.recognitionAPI.interimResults = true;
             self.recognitionAPI.lang = "zh-YUE";
             self.recognitionAPI.onresult = function (event) {
-                let interim_transcript = '';
+                let interim_transcript = '',
+                    final_transcript = '';
                 for (var i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
                         final_transcript += event.results[i][0].transcript;
