@@ -11,6 +11,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.player = document.getElementById('player');
     
     self.isTextToSpeech=false;
+
+    self.tmpReply = '';
     
     self.subtitleId = undefined;
     self.owner = undefined;
@@ -178,7 +180,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         self.tmpEndTime = undefined;
         self.tmpComment = undefined;
         self.currentVoiceURL = undefined;
-        self.tmpReply = undefined;
+        self.tmpReply = '';
         self.isEdit = false;
     };
 
@@ -528,11 +530,14 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     function setSpeech2Text(self, cb) {
         self.isTextToSpeech=true;
+        self.tmpReply=angular.isUndefined(self.tmpReply)?"":self.tmpReply;
         if (angular.isUndefined(self.recognitionAPI)) {
             self.recognitionAPI = new webkitSpeechRecognition();
-            self.recognitionAPI.continuous = true;
+            self.recognitionAPI.continuous = false;
             self.recognitionAPI.interimResults = true;
-            self.recognitionAPI.lang = "zh-YUE";
+//            self.recognitionAPI.lang = "zh-YUE";
+            self.recognitionAPI.lang = "en-US";
+
             self.recognitionAPI.onresult = function (event) {
                 let interim_transcript = '',
                     final_transcript = '';
