@@ -15,7 +15,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
     self.whoami = getParameterByName('whoami');
-    self.group = getParameterByName('group').toLowerCase()||"student";
+    self.group = getParameterByName('group').toLowerCase() || "student";
 
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
@@ -93,6 +93,12 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.setComments = () => {
         setComments(self);
     };
+    
+    self.setSpeech2Text=()=>{
+        setSpeech2Text(self,()=>{
+            
+        });
+    }
 
     self.setMask = (comment) => {
         let date = new Date(comment.createdAt);
@@ -509,7 +515,20 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                 }
             });
         });
+    }
 
+    function setSpeech2Text(self, cb) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = "zh-YUE";
+        recognition.onresult = function (event) {
+            console.log(event);
+        }
+        recognition.start();
+        if (angular.isDefined(cb)) {
+            cb(res);
+        }        
     }
 
 }]);
