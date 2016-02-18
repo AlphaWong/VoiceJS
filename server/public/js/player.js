@@ -93,10 +93,10 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.setComments = () => {
         setComments(self);
     };
-    
-    self.setSpeech2Text=()=>{
-        setSpeech2Text(self,()=>{
-            
+
+    self.setSpeech2Text = () => {
+        setSpeech2Text(self, () => {
+
         });
     }
 
@@ -518,17 +518,38 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function setSpeech2Text(self, cb) {
-        const recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = "zh-YUE";
-        recognition.onresult = function (event) {
-            console.log(event);
+        if (angular.isUndefined(self.recognitionAPI)) {
+            self.recognitionAPI = new webkitSpeechRecognition();
+            self.recognitionAPI.continuous = true;
+            self.recognitionAPI.interimResults = true;
+            self.recognitionAPI.lang = "zh-YUE";
+            self.recognitionAPI.onresult = function (event) {
+                let interim_transcript = '';
+                for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        final_transcript += event.results[i][0].transcript;
+                    } else {
+                        interim_transcript += event.results[i][0].transcript;
+                    }
+                }
+
+                //            final_transcript = capitalize(final_transcript);
+                self.tmpReply = final_transcript;
+                //            interim_span.innerHTML = linebreak(interim_transcript);
+                //            interim_span.innerHTML = linebreak(interim_transcript);
+            }
         }
-        recognition.start();
+        self.recognitionAPI.start();
         if (angular.isDefined(cb)) {
-            cb(res);
-        }        
+            cb();
+        }
+    }
+
+    function getSpeech2Text(self, cb) {
+        self.recognitionAPI.stop();
+        if (angular.isDefined(cb)) {
+            cb();
+        }
     }
 
 }]);
