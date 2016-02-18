@@ -213,8 +213,11 @@
                             </span>
                         </md-icon>
                     </md-input-container>
-                    <md-button class="md-raised md-warn" flex="100" ng-click="playerCtrl.setSpeech2Text()">
+                    <md-button class="md-raised md-warn" flex="100" ng-click="playerCtrl.setSpeech2Text()" ng-hide="playerCtrl.isTextToSpeech">
                         Speech to text
+                    </md-button>
+                    <md-button class="md-raised md-primary" flex="100" ng-click="playerCtrl.setSpeech2Text()" ng-show="playerCtrl.isTextToSpeech">
+                        Stop Speech to text
                     </md-button>
                 </div>
             </ng-form>

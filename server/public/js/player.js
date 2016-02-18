@@ -99,6 +99,12 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
         });
     }
+    
+    self.getSpeech2Text = () => {
+        getSpeech2Text(self, () => {
+
+        });
+    }
 
     self.setMask = (comment) => {
         let date = new Date(comment.createdAt);
@@ -535,7 +541,9 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                 }
 
                 //            final_transcript = capitalize(final_transcript);
-                self.tmpReply = final_transcript;
+                self.tmpReply += final_transcript;
+                self.isTextToSpeech=true;
+                $scope.$apply();
                 //            interim_span.innerHTML = linebreak(interim_transcript);
                 //            interim_span.innerHTML = linebreak(interim_transcript);
             }
@@ -548,6 +556,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     function getSpeech2Text(self, cb) {
         self.recognitionAPI.stop();
+        self.isTextToSpeech=false;
         if (angular.isDefined(cb)) {
             cb();
         }
