@@ -9,6 +9,9 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         hostName = window.location.hostname,
         port = '443';
     self.player = document.getElementById('player');
+    
+    self.isTextToSpeech=false;
+    
     self.subtitleId = undefined;
     self.owner = undefined;
 
@@ -539,10 +542,9 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                         interim_transcript += event.results[i][0].transcript;
                     }
                 }
-
+                self.isTextToSpeech=true;
                 //            final_transcript = capitalize(final_transcript);
                 self.tmpReply += final_transcript;
-                self.isTextToSpeech=true;
                 $scope.$apply();
                 //            interim_span.innerHTML = linebreak(interim_transcript);
                 //            interim_span.innerHTML = linebreak(interim_transcript);
