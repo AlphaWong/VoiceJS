@@ -9,18 +9,18 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         hostName = window.location.hostname,
         port = '443';
     self.player = document.getElementById('player');
-    
-    self.isTextToSpeech=false;
 
-    self.tmpReply = '';
-    
+    self.isTextToSpeech = false;
+
+    self.tmpReply = String();
+
     self.subtitleId = undefined;
     self.owner = undefined;
 
     self.from = getParameterByName('from');
     self.videoURL = getParameterByName('video');
     self.whoami = getParameterByName('whoami');
-    self.group = getParameterByName('group').toLowerCase() || "student";
+    self.group = getParameterByName('group').toLowerCase() || 'student';
 
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
@@ -39,7 +39,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                         setTrack(data.subtitles, (self) => {
                             clearComments(self, () => {
                                 self.subtitleInComment = data.subtitles.find((subtitle) => {
-                                    return subtitle._id == self.currentSubtitleInCommentId;
+                                    return subtitle._id === self.currentSubtitleInCommentId;
                                 });
                                 $scope.$apply();
                             });
@@ -104,7 +104,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
         });
     }
-    
+
     self.getSpeech2Text = () => {
         getSpeech2Text(self, () => {
 
@@ -112,10 +112,10 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     self.setMask = (comment) => {
-        let date = new Date(comment.createdAt);
-        let from = comment.from;
-        let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-        let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+        let date = new Date(comment.createdAt),
+            from = comment.from,
+            hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours(),
+            minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
 
         return `${date.toLocaleDateString()} ${hours}:${minutes} \r by ${from}`;
     };
@@ -180,7 +180,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         self.tmpEndTime = undefined;
         self.tmpComment = undefined;
         self.currentVoiceURL = undefined;
-        self.tmpReply = '';
+        self.tmpReply = String();
         self.isEdit = false;
     };
 
@@ -258,7 +258,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function clearComments(self, cb) {
-        self.currentSubtitleInCommentId = angular.isDefined(self.subtitleInComment) ? self.subtitleInComment._id + "" : undefined;
+        self.currentSubtitleInCommentId = angular.isDefined(self.subtitleInComment) ? self.subtitleInComment._id + String() : undefined;
         self.subtitleInComment = undefined;
         if (angular.isDefined(cb)) {
             cb();
@@ -327,20 +327,21 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
             seconds = sec_num - (hours * 3600) - (minutes * 60),
             milliseconds = Number.parseInt(((Math.round(num * 1000) / 1000) - sec_num) * 1000);
 
-        if (hours.toString().length === 1) {
-            hours = "0" + hours + "";
+        if (String(hours).length === 1) {
+            hours = `0${hours}`;
         }
-        if (minutes.toString().length === 1) {
-            minutes = "0" + minutes;
+        if (String(minutes).length === 1) {
+            minutes = `0${minutes}`;
         }
-        if (seconds.toString().length === 1) {
-            seconds = "0" + seconds + "";
+        if (String(seconds).length === 1) {
+            seconds = `0${seconds}`;
+
         }
 
-        if (milliseconds.toString().length === 2) {
-            milliseconds = "0" + milliseconds;
-        } else if (milliseconds.toString().length === 1) {
-            milliseconds = "00" + milliseconds + "";
+        if (String(milliseconds).length === 2) {
+            milliseconds = `0${milliseconds}`;
+        } else if (String(milliseconds).length === 1) {
+            milliseconds = `00${milliseconds}`;
         }
 
         let timeMask = `${hours}:${minutes}:${seconds}.${milliseconds}`;
@@ -440,7 +441,6 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     function setSubtitles(self, res, cb) {
         let url = `${protocol}//${hostName}:${port}/subtitles/${self.subtitleId}`;
         $http.put(url, res.data).then((res) => {
-
             if (angular.isDefined(cb)) {
                 cb();
             }
@@ -478,7 +478,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        return results === null ? String() : decodeURIComponent(results[1].replace(/\+/g, ' '));
     }
 
     function getVoice(self, cb) {
@@ -529,18 +529,17 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     }
 
     function setSpeech2Text(self, cb) {
-        self.isTextToSpeech=true;
-        self.tmpReply=angular.isUndefined(self.tmpReply)?"":self.tmpReply;
+        self.isTextToSpeech = true;
+        self.tmpReply = angular.isUndefined(self.tmpReply) ? String() : self.tmpReply;
         if (angular.isUndefined(self.recognitionAPI)) {
             self.recognitionAPI = new webkitSpeechRecognition();
             self.recognitionAPI.continuous = false;
             self.recognitionAPI.interimResults = true;
-//            self.recognitionAPI.lang = "zh-YUE";
-            self.recognitionAPI.lang = "en-US";
+            self.recognitionAPI.lang = 'en-US'; //self.recognitionAPI.lang = "zh-YUE";
 
             self.recognitionAPI.onresult = function (event) {
-                let interim_transcript = '',
-                    final_transcript = '';
+                let interim_transcript = String(),
+                    final_transcript = String();
                 for (var i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
                         final_transcript += event.results[i][0].transcript;
@@ -548,11 +547,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
                         interim_transcript += event.results[i][0].transcript;
                     }
                 }
-                //            final_transcript = capitalize(final_transcript);
                 self.tmpReply += final_transcript;
                 $scope.$apply();
-                //            interim_span.innerHTML = linebreak(interim_transcript);
-                //            interim_span.innerHTML = linebreak(interim_transcript);
             }
         }
         self.recognitionAPI.start();
@@ -563,7 +559,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
 
     function getSpeech2Text(self, cb) {
         self.recognitionAPI.stop();
-        self.isTextToSpeech=false;
+        self.isTextToSpeech = false;
         if (angular.isDefined(cb)) {
             cb();
         }
