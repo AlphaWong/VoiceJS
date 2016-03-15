@@ -127,18 +127,19 @@
                                     <ng-form name='editor'>
                                         <div layout='row'>
                                             <section flex='auto' layout='row'>
-                                                
-												<md-input-container flex='auto'>
+												<md-input-container class="md-block" flex="auto">
                                                     <label>Start</label>
 													<md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpStartTime')">timer</md-icon>
-                                                    <input ng-model="playerCtrl.tmpStartTime" required>
+                                                    <input ng-disabled="editor.tmpStartTime.$invalid" name="tmpStartTime" ng-model="playerCtrl.tmpStartTime" ng-pattern="/^\d{2}:\d{2}:\d{2}\.\d{3}$/" required>
+                                                    <div class="hint" ng-style="{'color':'grey'}">{{::playerCtrl.timeHints}}</div>        
                                                 </md-input-container>
                                             </section>
                                             <section flex='auto' layout='row'>
                                                 <md-input-container flex='auto'>
                                                     <label>End</label>
 													<md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpEndTime')">timer</md-icon>
-                                                    <input ng-model="playerCtrl.tmpEndTime" required>
+                                                    <input ng-disabled="editor.tmpEndTime.$invalid" name="tmpEndTime" ng-model="playerCtrl.tmpEndTime" ng-pattern="/^\d{2}:\d{2}:\d{2}\.\d{3}$/" required>
+                                                    <div class="hint" ng-style="{'color':'grey'}">{{::playerCtrl.timeHints}}</div>
                                                 </md-input-container>
                                             </section>
                                         </div>

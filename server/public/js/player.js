@@ -10,6 +10,8 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
         port = '443';
     self.player = document.getElementById('player');
 
+    self.timeHints='HH:MM:SS.FFF';
+    
     self.isTextToSpeech = false;
 
     self.tmpReply = String();
@@ -25,7 +27,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.video = encodeURIComponent(self.videoURL);
     self.player.src = self.videoURL;
     self.checkURL = `${protocol}//${hostName}:${port}/subtitles/${self.from}/${self.video}/findOne`;
-
+    
     //Socket
     self.socketURL = `${protocol}//${hostName}:${port}`;
     let socket = io.connect(self.socketURL);
@@ -123,6 +125,11 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
     self.isVoice = (comment) => {
         return angular.isDefined(comment.url) && comment.url.length > 0;
     };
+
+    self.isFilled = (value) => {
+        console.log(value.$valid);
+        //        return self.tmpStartTime
+    }
 
     self.sendComment = (mode) => {
         getSubtitles(self, (res) => {
