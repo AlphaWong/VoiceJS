@@ -128,18 +128,18 @@
                                         <div layout='row'>
                                             <section flex='auto' layout='row'>
 												<md-input-container class="md-block" flex="auto">
-                                                    <label>Start</label>
+                                                    <label>Start ({{::playerCtrl.timeHints}})</label>
 													<md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpStartTime')">timer</md-icon>
                                                     <input ng-disabled="editor.tmpStartTime.$invalid" name="tmpStartTime" ng-model="playerCtrl.tmpStartTime" ng-pattern="/^\d{2}:\d{2}:\d{2}\.\d{3}$/" required>
-                                                    <div class="hint" ng-style="{'color':'grey'}">{{::playerCtrl.timeHints}}</div>        
+<!--                                                    <div class="hint" ng-style="{'color':'grey'}">{{::playerCtrl.timeHints}}</div>        -->
                                                 </md-input-container>
                                             </section>
                                             <section flex='auto' layout='row'>
                                                 <md-input-container flex='auto'>
-                                                    <label>End</label>
+                                                    <label>End ({{::playerCtrl.timeHints}})</label>
 													<md-icon ng-click="playerCtrl.getVideoCurrentTime('tmpEndTime')">timer</md-icon>
                                                     <input ng-disabled="editor.tmpEndTime.$invalid" name="tmpEndTime" ng-model="playerCtrl.tmpEndTime" ng-pattern="/^\d{2}:\d{2}:\d{2}\.\d{3}$/" required>
-                                                    <div class="hint" ng-style="{'color':'grey'}">{{::playerCtrl.timeHints}}</div>
+<!--                                                    <div class="hint" ng-style="{'color':'grey'}">{{::playerCtrl.timeHints}}</div>-->
                                                 </md-input-container>
                                             </section>
                                         </div>
