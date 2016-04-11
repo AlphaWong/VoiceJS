@@ -77,7 +77,7 @@
                                 <section>
                                     <md-subheader ng-style="{color:'rebeccapurple'}">
                                         Number of caption : {{playerCtrl.cues.length||0}} 
-                                        <div ng-hide="playerCtrl.isOwner||playerCtrl.group!=='student'">To make a comment, please click the edit button below.</div>
+                                        <div ng-hide="playerCtrl.isOwner||playerCtrl.group!=='student'">To make a comment, please click "Edit Comment" below.</div>
                                     </md-subheader>
                                     <md-card ng-repeat="cue in playerCtrl.cues|orderBy:'second'">
                                         <md-card-title>
