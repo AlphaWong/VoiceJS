@@ -298,7 +298,7 @@ player_app.controller('playerCtrl', ['$scope', '$http', '$mdSidenav', '$filter',
             return cue._id === subtitle._id;
         });
         if (angular.isDefined(cb)) {
-            cb(target);
+            cb(target[0]);
         }
     };
 
